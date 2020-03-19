@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require './actions/action'
+require './lib/actions/action'
 
 module Actions
   class Drawing < Action

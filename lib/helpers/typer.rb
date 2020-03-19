@@ -1,14 +1,24 @@
 # frozen_string_literal: true
+require './lib/helpers/border'
 
 module Helpers
   class Typer < String
-    attr_reader :base, :self, :text
+    KEYS_TO_SHIFT = {
+      '1' => '!', '2' => '@', '3' => '#', '4' => '$', '5' => '%', '6' => '^',
+      '7' => '*', '8' => '*', '9' => '(', '0' => ')', '-' => '_', '=' => '+',
+      '`' => '~', ',' => '<', '.' => '>', '/' => '?', ';' => ':', "'" => '"',
+      '[' => '{', ']' => '}', '\\' => '|'
+    }
+      .freeze
+
+    attr_reader :base, :text
 
     def initialize(base:, x:, y:, string: '')
       @base = base
       self << string
 
       @text = base.text.new(self, x: x, y: y, size: 20, color: 'black')
+      @border = Border.new(base: @text)
       @shift_held = false
     end
 
@@ -26,9 +36,12 @@ module Helpers
       end
 
       text.text = self
+      border.update
     end
 
     private
+
+    attr_reader :border
 
     def backspace?(other)
       other == 'backspace'
@@ -76,7 +89,7 @@ module Helpers
     end
 
     def shift(other)
-      return other if (other =~ /[a-z]/).nil?
+      return KEYS_TO_SHIFT[other] if (other =~ /[a-z]/).nil?
 
       other.capitalize
     end

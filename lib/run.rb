@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require './whiteboard_window'
-require './actions/drawing'
-require './actions/typing'
+require './lib/whiteboard_window'
+require './lib/actions/drawing'
+require './lib/actions/typing'
 
 WhiteboardWindow.new.build do
   action Actions::Drawing

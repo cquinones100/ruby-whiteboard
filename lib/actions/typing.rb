@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require './actions/action'
-require './helpers/typer'
+require './lib/actions/action'
+require './lib/helpers/typer'
 
 module Actions
   class Typing < Action
