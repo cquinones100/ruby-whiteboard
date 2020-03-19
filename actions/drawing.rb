@@ -1,31 +1,16 @@
 # frozen_string_literal: true
-require 'ostruct'
+require './actions/action'
 
 module Actions
-  class Drawing
-    attr_writer :window
-
+  class Drawing < Action
     def initialize
+      super
+
       @pen_down = false
-      @engaged = false
-      @window = nil
-      @objects = []
     end
 
     def engage?(event)
-      engaged? || event.key == 'd'
-    end
-
-    def engage
-      @engaged = true
-    end
-
-    def disengage
-      @engaged = false
-    end
-
-    def engaged?
-      @engaged
+      super() || event.key == 'd'
     end
 
     def pen_down?
@@ -37,9 +22,7 @@ module Actions
     end
 
     def draw
-      current_x, current_y = window.mouse_coordinates
-
-      objects << window.line.new(
+      objects << line.new(
         x1: @last_x || current_x, y1: @last_y || current_y,
         x2: current_x, y2: current_y,
         width: 5,
@@ -56,16 +39,10 @@ module Actions
       register_key_up_handler
     end
 
-    def clear_objects
-      objects.each(&:remove)
-    end
-
     private
 
-    attr_reader :window, :objects
-
     def register_mouse_down_handler
-      window.on :mouse_down do |event|
+      on :mouse_down do |event|
         if put_pen_down?
           put_pen_down(event)
         else
@@ -75,7 +52,7 @@ module Actions
     end
 
     def register_mouse_move_handler
-      window.on :mouse_move do
+      on :mouse_move do
         @last_x, @last_y = draw if draw?
       end
     end
@@ -85,13 +62,13 @@ module Actions
         if put_pen_down? && event.key == 'space'
           x, y = window.mouse_coordinates
 
-          put_pen_down(OpenStruct.new(x: x, y: y))
+          put_pen_down(Struct.new(:x, :y).new(x: x, y: y))
         end
       end
     end
 
     def register_key_up_handler
-      window.on :key_up do |event|
+      on :key_up do |event|
         lift_pen if pen_down? && event.key == 'space'
       end
     end

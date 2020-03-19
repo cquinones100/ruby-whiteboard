@@ -19,6 +19,10 @@ class WhiteboardWindow
     )
   end
 
+  def engaged?
+    !@engaged_action.nil?
+  end
+
   def build(&block)
     set width: 1000, height: 1000
     set title: 'Ruby Whiteboard'
@@ -29,17 +33,19 @@ class WhiteboardWindow
 
     on :key_down do |event|
       puts event.key
-      case event.key
-      when 'c'
-        actions.each(&:clear_objects)
-      when 'escape'
-        disengage
+
+      if engaged?
+        disengage if event.key == 'escape'
       else
-        toggle_action_engage(event)
+        engage(event)
       end
     end
 
     show
+  end
+
+  def engage(event)
+    toggle_action_engage(event)
   end
 
   def on(*args, &block)
@@ -52,6 +58,10 @@ class WhiteboardWindow
 
   def line
     Line
+  end
+
+  def text
+    Text
   end
 
   private
