@@ -6,4 +6,3 @@ require './actions/drawing'
 WhiteboardWindow.new.build do
   action Actions::Drawing
 end
-
